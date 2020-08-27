@@ -107,7 +107,7 @@ public class Chart implements OnChartGestureListener {
         }
 
         BarData cd = new BarData(sets);
-        cd.setBarWidth(0.9f);
+        //cd.setBarWidth(0.9f);
         return cd;
     }
 

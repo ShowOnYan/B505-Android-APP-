@@ -28,17 +28,14 @@ public class BarChartItem extends ChartItem {
     private String title, x, y;
     private Context context;
     private ArrayList<String> label;
-    float groupSpace = 0.08f;
-    float barSpace = 0.06f; // x4 DataSet
-    float barWidth = 0.4f; // x4 DataSet
     int groupCount = 1;
-    private boolean multiple;
+    private int multiple;
     private ArrayList<LegendEntry> legendEntries = new ArrayList<LegendEntry>();
     protected String[] values = new String[]{
             "1"
     };
 
-    public BarChartItem(ChartData<?> cd, Context c, String title, ArrayList<String> label, String yUnit, String xUnit, boolean multiple) {
+    public BarChartItem(ChartData<?> cd, Context c, String title, ArrayList<String> label, String yUnit, String xUnit, int multiple) {
         super(cd);
         for (int i=0; i < cd.getDataSetLabels().length; i++){
             LegendEntry legendEntry = new LegendEntry();
@@ -141,12 +138,23 @@ public class BarChartItem extends ChartItem {
         holder.chart.setMarker(mv);
         // set data
         holder.chart.setData((BarData) mChartData);
+
+
+        float groupSpace = 0.08f;
+        float barSpace = 0.02f;
+        float barWidth = (1 - groupSpace) / multiple  - barSpace;
+        // (barSpace + barWidth) * multiple + groupSpace = 1.00 -> interval per "group"
+
         ((BarData) mChartData).setBarWidth(barWidth);
         holder.chart.setFitBars(true);
+        //holder.chart.getXAxis().setCenterAxisLabels(true);
         // 決定多筆柱狀圖是否重疊，要重疊就把下面這兩行註解掉
-        if(multiple)
+        if(multiple > 1) {
             // 決定柱狀的起始位置，如果格式有跑掉，就從這裡慢慢去修改
             holder.chart.groupBars(1.5f,groupSpace,barSpace);
+            holder.chart.notifyDataSetChanged();
+        }
+
         // do not forget to refresh the chart
         // holder.chart.invalidate();
         holder.chart.animateY(700);
